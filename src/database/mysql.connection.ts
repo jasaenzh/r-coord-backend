@@ -24,10 +24,6 @@ class MySQLConnection {
             connection.release();
         }
     }
-
-    public async close(): Promise<void> {
-        await this.pool.end();
-    }
 }
 
 export default MySQLConnection;

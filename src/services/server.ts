@@ -2,6 +2,9 @@ import express, { Application } from "express";
 import userRoutes from "../routes/userRoutes";
 import cors from "cors";
 import MySQLConnection from "../database/mysql.connection";
+import morgan from "morgan";
+import swaggerUi from "swagger-ui-express";
+import swaggerSetup from "../docs/swagger";
 
 class Server {
     private app: Application;
@@ -25,7 +28,7 @@ class Server {
         this.routes()
     }
 
-    private async connectDB() {
+    async connectDB() {
         try {
             await this.db.executeQuery("SELECT 1"); // Prueba conexión con MySQL
             console.log("Conexion a la base de datos establecida");
@@ -35,8 +38,10 @@ class Server {
     }
 
     middlewares() {
+        this.app.use(morgan("dev"));
         this.app.use(cors());
         this.app.use(express.json());
+        this.app.use("/documentacion", swaggerUi.serve, swaggerUi.setup(swaggerSetup))
     }
 
     routes() {
