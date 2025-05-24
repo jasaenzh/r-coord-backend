@@ -1,12 +1,12 @@
 import express, { Application } from "express";
-import userRoutes from "../routes/userRoutes";
+import userRoutes from "../routes/users.routes";
 import cors from "cors";
 import MySQLConnection from "../database/mysql.connection";
 import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
 import swaggerSetup from "../docs/swagger";
 
-class Server {
+export class Server {
     private app: Application;
     private port: string;
     private db: MySQLConnection;
@@ -55,4 +55,3 @@ class Server {
     }
 }
 
-export default Server;
