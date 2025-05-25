@@ -1,12 +1,12 @@
 import bcrypt from "bcryptjs";
 import { UserServices } from "../services/users.services";
-import { User } from "../interfaces/user.interface";
+import { User, UserRole } from "../interfaces/user.interface";
 import jwt from "jsonwebtoken";
 
 export class AuthService {
     SALT_ROUNDS: number = 10;
 
-    async register(userData: { email: string; password: string; name: string }) {
+    async register(userData: { email: string; password: string; name: string, role: UserRole }) {
         // Verificar si el usuario ya existe
         const existingUser = await new UserServices().findUserByEmail(
             userData.email
@@ -24,6 +24,7 @@ export class AuthService {
             email: userData.email,
             password: hashPassword,
             state: 1,
+            role: UserRole.Cliente
         });
 
         // Generar el token

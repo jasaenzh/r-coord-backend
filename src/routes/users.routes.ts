@@ -9,7 +9,7 @@ import {
 } from "../controllers/users.controller";
 import { authToken } from "../middlewares/auth.middlewares";
 
-const router = Router();
+const routerUsers = Router();
 
 /**
  * @swagger
@@ -27,7 +27,7 @@ const router = Router();
  *               items:
  *                 $ref: '#/components/schemas/User'
  */
-router.get("/", authToken, getUsers);
+routerUsers.get("/", authToken, getUsers);
 
 /**
  * @swagger
@@ -52,7 +52,7 @@ router.get("/", authToken, getUsers);
  *          404:
  *              description: Usuario no encontrado
  */
-router.get("/:id", authToken, getUser);
+routerUsers.get("/:id", authToken, getUser);
 
 /**
  * @swagger
@@ -83,7 +83,7 @@ router.get("/:id", authToken, getUser);
  *       400:
  *         description: Error en la solicitud
  */
-router.post("/register", registertUser);
+routerUsers.post("/register", registertUser);
 
 /**
  * @swagger
@@ -111,9 +111,9 @@ router.post("/register", registertUser);
  *       400:
  *         description: Error en la solicitud
  */
-router.post("/login", loginUser);
+routerUsers.post("/login", loginUser);
 
-router.put("/:id", authToken, putUser);
-router.delete("/:id", authToken, deleteUser);
+routerUsers.put("/:id", authToken, putUser);
+routerUsers.delete("/:id", authToken, deleteUser);
 
-export default router;
+export default routerUsers;

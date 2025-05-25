@@ -15,7 +15,6 @@ export const getUsers = async (req: Request, res: Response) => {
 export const getUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;
-        console.log(id);
         const userService = new UserServices();
         const usuario = await userService.getUserById(Number(id));
 
@@ -32,16 +31,16 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
 
 export const registertUser = async (req: Request, res: Response) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, role } = req.body;
         if (!name || !email || !password) {
             res.status(400).json({ error: "Faltan campos obligatorios" });
             return;
         }
-        const { user, token } = await new AuthService().register({ name, email, password });
+        const { user, token } = await new AuthService().register({ name, email, password, role });
         res.status(201).json({ user, token });
     } catch (error: any) {
         res.status(400).json({
-            error: "Error al registrar usuario: " + (error.message || "Error desconocido"),
+            error: "Error al registrar: " + (error.message || "Error desconocido"),
         });
     }
 };
