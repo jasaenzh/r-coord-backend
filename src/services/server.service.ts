@@ -19,7 +19,7 @@ export class Server {
     constructor() {
         // Variables
         this.app = express();
-        this.port = process.env.PORT || "8001";
+        this.port = process.env.PORT_SERVER || "8001";
 
         // Configuracion de la base de datos
         this.db = new MySQLConnection();
