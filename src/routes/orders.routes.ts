@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { registerOrder, getOrdersByUserId } from '../controllers/orders.controller'
+import { registerOrder, getOrdersByUserId, getAllAddress } from '../controllers/orders.controller'
 import { authToken } from "../middlewares/auth.middlewares";
 
 const routerOrders = Router();
 
 routerOrders.post("/register", authToken, registerOrder);
-routerOrders.get("/orders_by_user_id", authToken, getOrdersByUserId);
+routerOrders.get("/findAllAddress", authToken, getAllAddress);
+routerOrders.get("/ordersByUserId", authToken, getOrdersByUserId);
 
 export default routerOrders;

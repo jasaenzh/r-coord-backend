@@ -1,9 +1,24 @@
 import MySQLConnection from "../database/mysql.connection";
-import { ShippingOrder } from "../interfaces/order.interface"
+import { ShippingOrder } from "../interfaces/order.interface";
+import axios from "axios";
+import dotenv from "dotenv";
+dotenv.config();
+
+interface AddressResult {
+    title: string;
+    countryName: string;
+    county: string;
+    city: string;
+    district: string;
+    postalCode: string;
+    lat: number;
+    lng: number;
+}
 
 export class OrderServices {
     TABLE_NAME = "shipping_orders";
     db = new MySQLConnection();
+
 
     // Crear una nueva orden de envío
     async createOrder(orderData: Omit<ShippingOrder, "id">): Promise<ShippingOrder> {
@@ -19,6 +34,43 @@ export class OrderServices {
         ]);
         const insertedOrder = await this.db.executeQuery(`SELECT * FROM ${this.TABLE_NAME} WHERE id = ?`, [newOrder.insertId]);
         return insertedOrder[0] as ShippingOrder;
+    }
+
+    // Validar dirección de envio con HERE API
+    async findAddress(address: string): Promise<AddressResult[] | null> {
+        const apikey_here = process.env.API_KEY_HERE
+        console.log("DIRECCION" + address)
+        const searchAddress = address;
+        // Validar direccion de envio
+        const response = await axios.get(`https://geocode.search.hereapi.com/v1/geocode?q=${searchAddress}&apiKey=${apikey_here}`);
+        if (response.data.items.length === 0) {
+            return null;
+        }
+        // Extraer y transformar la información relevante
+        const filteredResults = response.data.items.map((item: any) => ({
+            title: item.title,
+            countryName: item.address.countryName,
+            county: item.address.county,
+            city: item.address.city,
+            district: item.address.district,
+            postalCode: item.address.postalCode,
+            lat: item.position.lat,
+            lng: item.position.lng,
+        }));
+
+        return filteredResults;
+        /*
+        Funciona  pero no es preciso a veces trae correctas y otras no
+        else if (response.data.items.length > 1) {
+            return response.data.items[0].address.label;
+        }
+        const addressList = response.data.items.map((itemaddress: { address: string; }) => itemaddress.address).map((itemstreet: { street: string; }) => itemstreet.street);
+        return addressList.reduce((bestMatch: string, currentAddress: string) => {
+            return address.localeCompare(currentAddress) > bestMatch.localeCompare(address)
+                ? currentAddress
+                : bestMatch;
+        }, "");
+        */
     }
 
     // Obtener ordenes de envío por usuario

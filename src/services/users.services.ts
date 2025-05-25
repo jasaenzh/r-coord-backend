@@ -1,5 +1,5 @@
 import MySQLConnection from "../database/mysql.connection";
-import { User, UserRole } from "../interfaces/user.interface";
+import { User } from "../interfaces/user.interface";
 
 export class UserServices {
     TABLE_NAME = "users";
