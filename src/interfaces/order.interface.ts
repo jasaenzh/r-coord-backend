@@ -14,3 +14,14 @@ export interface ShippingOrder {
     weight: number;
     order_status: StatusOrder.En_espera;
 }
+
+export interface AddressResult {
+    title: string;
+    countryName: string;
+    county: string;
+    city: string;
+    district: string;
+    postalCode: string;
+    lat: number;
+    lng: number;
+}

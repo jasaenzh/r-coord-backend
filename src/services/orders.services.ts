@@ -1,26 +1,17 @@
 import MySQLConnection from "../database/mysql.connection";
-import { ShippingOrder } from "../interfaces/order.interface";
+import { AddressResult, ShippingOrder } from "../interfaces/order.interface";
 import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
 
-interface AddressResult {
-    title: string;
-    countryName: string;
-    county: string;
-    city: string;
-    district: string;
-    postalCode: string;
-    lat: number;
-    lng: number;
-}
+
 
 export class OrderServices {
     TABLE_NAME = "shipping_orders";
     db = new MySQLConnection();
 
 
-    // Crear una nueva orden de envío
+    // Crear una nueva orden de envio
     async createOrder(orderData: Omit<ShippingOrder, "id">): Promise<ShippingOrder> {
         const query = `INSERT INTO ${this.TABLE_NAME} (user_id, tracking_number, recipient_name, recipient_address, package_description, weight, order_status) VALUES (?,?,?,?,?,?,?)`;
         const newOrder = await this.db.executeQuery(query, [
@@ -38,15 +29,14 @@ export class OrderServices {
 
     // Validar dirección de envio con HERE API
     async findAddress(address: string): Promise<AddressResult[] | null> {
-        const apikey_here = process.env.API_KEY_HERE
-        console.log("DIRECCION" + address)
+        const apikey_here = process.env.API_KEY_HERE;
         const searchAddress = address;
         // Validar direccion de envio
         const response = await axios.get(`https://geocode.search.hereapi.com/v1/geocode?q=${searchAddress}&apiKey=${apikey_here}`);
         if (response.data.items.length === 0) {
             return null;
         }
-        // Extraer y transformar la información relevante
+        // Extraer y transformar la informacion relevante
         const filteredResults = response.data.items.map((item: any) => ({
             title: item.title,
             countryName: item.address.countryName,
@@ -73,7 +63,7 @@ export class OrderServices {
         */
     }
 
-    // Obtener ordenes de envío por usuario
+    // Obtener ordenes de envio por usuario
     async findOrdersByUserId(userId: number): Promise<ShippingOrder[]> {
         const query = `SELECT * FROM ${this.TABLE_NAME} WHERE user_id = ?`;
         const result = await this.db.executeQuery(query, [userId]);

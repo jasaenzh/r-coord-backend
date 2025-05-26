@@ -15,7 +15,6 @@ export class UserServices {
     // Obtener un usuario por ID
     async getUserById(id: number): Promise<User | string> {
         if (isNaN(id) || id <= 0) {
-            console.error("ID inválido:", id);
             return "ID inválido";
         }
 

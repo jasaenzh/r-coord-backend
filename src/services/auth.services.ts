@@ -42,7 +42,7 @@ export class AuthService {
             throw new Error("Faltan variables de entorno: JWT_SECRET");
         }
 
-        return jwt.sign({ id: user.id, email: user.email }, secret, { expiresIn });
+        return jwt.sign({ id: user.id, email: user.email, role: user.role }, secret, { expiresIn });
     }
 
     // Iniciar sesion
@@ -73,7 +73,7 @@ export class AuthService {
     }
 
     // Verificar el token
-    validateToken(token: string): { id: number, email: string } {
+    validateToken(token: string): { id: number, email: string, role: UserRole } {
         const secret = process.env.JWT_SECRET;
         if (!secret) {
             throw new Error("Error: Faltan datos de entorno: JWT_SECRET");
@@ -88,6 +88,7 @@ export class AuthService {
         return {
             id: (decoded as any).id,
             email: (decoded as any).email,
+            role: (decoded as any).role
         };
 
         // return jwt.verify(token, secret) as User

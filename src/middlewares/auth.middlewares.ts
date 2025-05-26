@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { AuthService } from "../services/auth.services";
+import { UserRole } from "../interfaces/user.interface";
 
 // Extender la interfaz Request de Express
 declare global {
@@ -8,6 +9,7 @@ declare global {
             user?: {
                 id: number;
                 email: string;
+                role: UserRole;
             };
         }
     }
