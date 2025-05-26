@@ -13,7 +13,7 @@ export const adminOrEmployeeOnly = (req: Request, res: Response, next: NextFunct
     const allowedRoles: UserRole[] = [UserRole.Administrador, UserRole.Empleado];
     if (!allowedRoles.includes(user.role)) {
         res.status(403).json({
-            error: "Acceso denegado: Se requiere rol de administrador o empleado"
+            error: "Acceso denegado: Se requiere otro rol"
         });
         return;
     }

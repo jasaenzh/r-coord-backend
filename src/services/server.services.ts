@@ -2,6 +2,7 @@ import express, { Application } from "express";
 import usersRoutes from "../routes/users.routes";
 import ordersRoutes from "../routes/orders.routes";
 import assignmentsRoutes from "../routes/assignments.routes";
+import truckDriversRoutes from "../routes/truckDrivers.routes";
 import cors from "cors";
 import MySQLConnection from "../database/mysql.connection";
 import morgan from "morgan";
@@ -16,6 +17,7 @@ export class Server {
         users: "/api/users",
         orders: "/api/orders",
         assignments: "/api/assignments",
+        truckDrivers: "/api/truck-drivers",
     };
 
     constructor() {
@@ -55,7 +57,8 @@ export class Server {
     routes() {
         this.app.use(this.apiPaths.users, usersRoutes);
         this.app.use(this.apiPaths.orders, ordersRoutes);
-        this.app.use(this.apiPaths.assignments, assignmentsRoutes)
+        this.app.use(this.apiPaths.assignments, assignmentsRoutes);
+        this.app.use(this.apiPaths.truckDrivers, truckDriversRoutes);
     }
 
     listen() {
