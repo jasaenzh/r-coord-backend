@@ -1,6 +1,7 @@
 import express, { Application } from "express";
 import usersRoutes from "../routes/users.routes";
 import ordersRoutes from "../routes/orders.routes";
+import assignmentsRoutes from "../routes/assignments.routes";
 import cors from "cors";
 import MySQLConnection from "../database/mysql.connection";
 import morgan from "morgan";
@@ -13,7 +14,8 @@ export class Server {
     private db: MySQLConnection;
     private apiPaths = {
         users: "/api/users",
-        orders: "/api/orders"
+        orders: "/api/orders",
+        assignments: "/api/assignments",
     };
 
     constructor() {
@@ -27,7 +29,7 @@ export class Server {
 
         // Configuracion de middlewares y rutas
         this.middlewares();
-        this.routes()
+        this.routes();
     }
 
     async connectDB() {
@@ -43,12 +45,17 @@ export class Server {
         this.app.use(morgan("dev"));
         this.app.use(cors());
         this.app.use(express.json());
-        this.app.use("/documentacion", swaggerUi.serve, swaggerUi.setup(swaggerSetup))
+        this.app.use(
+            "/documentacion",
+            swaggerUi.serve,
+            swaggerUi.setup(swaggerSetup)
+        );
     }
 
     routes() {
         this.app.use(this.apiPaths.users, usersRoutes);
-        this.app.use(this.apiPaths.orders, ordersRoutes)
+        this.app.use(this.apiPaths.orders, ordersRoutes);
+        this.app.use(this.apiPaths.assignments, assignmentsRoutes)
     }
 
     listen() {
@@ -57,4 +64,3 @@ export class Server {
         });
     }
 }
-
