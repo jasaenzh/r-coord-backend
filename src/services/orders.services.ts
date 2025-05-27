@@ -85,4 +85,11 @@ export class OrderServices {
         return orders as ShippingOrder[];
     }
 
+    async calculateWeightOrderById(orderId: number): Promise<number> {
+        const queryOrder = `SELECT * FROM ${this.TABLE_NAME} WHERE id = ?`;
+        const order = await this.db.executeQuery(queryOrder, [orderId]);
+        const orderWeight = Number(order[0].weight);
+        return orderWeight;
+    }
+
 }

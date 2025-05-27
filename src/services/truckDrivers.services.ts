@@ -49,5 +49,17 @@ export class TruckDriversServices {
         return "user_id no es empleado";
 
     }
+
+    async getDriverCapacity(truckDriverId: number): Promise<number> {
+        const query = `SELECT max_capacity, current_weight FROM ${this.TABLE_NAME} WHERE id = ? AND status = 'Disponible'`;
+        const truckDriverDisp = await this.db.executeQuery(query, [truckDriverId]);
+        // si no el conductor no esta disponible traer un [] vacio
+        if (!truckDriverDisp || truckDriverDisp.length === 0) {
+            throw new Error("Conductor no disponible");
+        }
+        const { max_capacity, current_weight } = truckDriverDisp[0];
+        const availableCapacity = max_capacity - current_weight;
+        return availableCapacity;
+    }
 }
 

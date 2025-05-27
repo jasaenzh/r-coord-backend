@@ -1,11 +1,30 @@
 import MySQLConnection from "../database/mysql.connection";
 import { AssignmentRoute } from "../interfaces/routeAssignment.interface";
+import { OrderServices } from "./orders.services";
+import { TruckDriversServices } from "./truckDrivers.services";
 
 export class AssignmentServices {
     TABLE_NAME = "route_assignments";
     TABLE_NAME_ORDERS = "shipping_orders";
     db = new MySQLConnection();
     async createRouteAssignment(routeAssignmenData: Omit<AssignmentRoute, "id">): Promise<AssignmentRoute> {
+
+        // Calcular la capacidad del conductor
+        const capMax = await new TruckDriversServices().getDriverCapacity(
+            routeAssignmenData.truck_driver_id
+        );
+        console.log("capMax", capMax);
+
+        // Calcular el peso del pedido
+        const weightOrder = await new OrderServices().calculateWeightOrderById(routeAssignmenData.order_id)
+
+        console.log("weightOrder", weightOrder);
+
+        // Verificar si el conductor tiene capacidad para llevar el pedido
+        if (weightOrder > capMax) {
+            throw new Error("El conductor no tiene capacidad para el pedido (CapaMax:" + capMax + ", PesoPed:" + weightOrder + ")");
+        }
+
         const query = `INSERT INTO ${this.TABLE_NAME} (order_id, truck_driver_id) VALUES (?,?)`;
         const newRouteAssignment = await this.db.executeQuery(query, [
             routeAssignmenData.order_id,
